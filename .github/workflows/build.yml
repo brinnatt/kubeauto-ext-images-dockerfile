@@ -1,0 +1,123 @@
+name: build
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./pause/Dockerfile
+            image: brinnatt/pause
+            tag: '3.10'
+            ctx: ./pause/
+          - dockerfile: ./metrics-server/Dockerfile
+            image: brinnatt/metrics-server
+            tag: v0.7.2
+            ctx: ./metrics-server/
+          - dockerfile: ./k8s-dns-node-cache/Dockerfile
+            image: brinnatt/k8s-dns-node-cache
+            tag: 1.25.0
+            ctx: ./k8s-dns-node-cache/
+          - dockerfile: ./harbor-offline/Dockerfile
+            image: brinnatt/harbor-offline
+            tag: v2.12.4
+            ctx: ./harbor-offline/
+          - dockerfile: ./kube-state-metrics/Dockerfile
+            image: brinnatt/kube-state-metrics
+            tag: v2.15.0
+            ctx: ./kube-state-metrics/
+          - dockerfile: ./kube-webhook-certgen/Dockerfile
+            image: brinnatt/kube-webhook-certgen
+            tag: v1.6.0
+            ctx: ./kube-webhook-certgen/
+          - dockerfile: ./ingress-nginx-controller/Dockerfile
+            image: brinnatt/ingress-nginx-controller
+            tag: v1.13.0
+            ctx: ./ingress-nginx-controller/
+          - dockerfile: ./nfs-subdir-external-provisioner/Dockerfile
+            image: brinnatt/nfs-subdir-external-provisioner 
+            tag: v4.0.18
+            ctx: ./nfs-subdir-external-provisioner/
+          - dockerfile: ./json-mock/Dockerfile
+            ctx: ./json-mock/
+            image: brinnatt/json-mock
+            tag: v1.3.0
+          - dockerfile: ./alpine-curl/Dockerfile
+            ctx: ./alpine-curl/
+            image: brinnatt/alpine-curl
+            tag: v7.85.0
+          - dockerfile: ./kube-apiserver/Dockerfile
+            ctx: ./kube-apiserver/
+            image: brinnatt/kube-apiserver
+            tag: v1.26.0
+          - dockerfile: ./kube-controller-manager/Dockerfile
+            ctx: ./kube-controller-manager/
+            image: brinnatt/kube-controller-manager
+            tag: v1.26.0
+          - dockerfile: ./kube-scheduler/Dockerfile
+            ctx: ./kube-scheduler/
+            image: brinnatt/kube-scheduler
+            tag: v1.26.0
+          - dockerfile: ./kube-proxy/Dockerfile
+            ctx: ./kube-proxy/
+            image: brinnatt/kube-proxy
+            tag: v1.26.0
+          - dockerfile: ./snapshot-controller/Dockerfile
+            image: brinnatt/snapshot-controller
+            tag: v7.0.0
+            ctx: ./snapshot-controller/
+          - dockerfile: ./csi-node-driver-registrar/Dockerfile
+            image: brinnatt/csi-node-driver-registrar
+            tag: v2.13.0
+            ctx: ./csi-node-driver-registrar/
+          - dockerfile: ./csi-provisioner/Dockerfile
+            image: brinnatt/csi-provisioner
+            tag: v5.2.0
+            ctx: ./csi-provisioner/
+          - dockerfile: ./csi-resizer/Dockerfile
+            image: brinnatt/csi-resizer
+            tag: v1.11.2
+            ctx: ./csi-resizer/
+          - dockerfile: ./csi-snapshotter/Dockerfile
+            image: brinnatt/csi-snapshotter
+            tag: v7.0.0
+            ctx: ./csi-snapshotter/
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }} 
+          tags: ${{ matrix.tag }} 
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.ctx }}
+          file: ${{ matrix.dockerfile }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          push: true
