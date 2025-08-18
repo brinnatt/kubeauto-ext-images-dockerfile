@@ -1,0 +1,1 @@
+FROM alpine/ansible:2.18.6

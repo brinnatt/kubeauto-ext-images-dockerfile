@@ -1,0 +1,1 @@
+FROM quay.io/ansible/ansible-runner:latest

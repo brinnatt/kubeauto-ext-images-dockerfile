@@ -22,6 +22,14 @@ jobs:
             image: brinnatt/k8s-dns-node-cache
             tag: 1.25.0
             ctx: ./k8s-dns-node-cache/
+          - dockerfile: ./alpine-ansible/Dockerfile
+            image: brinnatt/ansible
+            tag: 2.18.6
+            ctx: ./alpine-ansible/
+          - dockerfile: ./ansible-runner/Dockerfile
+            image: brinnatt/ansible-runner
+            tag: 0.9.1
+            ctx: ./ansible-runner/
           - dockerfile: ./harbor-offline/Dockerfile
             image: brinnatt/harbor-offline
             tag: v2.12.4
