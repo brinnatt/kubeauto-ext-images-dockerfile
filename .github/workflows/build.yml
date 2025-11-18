@@ -16,11 +16,11 @@ jobs:
             ctx: ./pause/
           - dockerfile: ./metrics-server/Dockerfile
             image: brinnatt/metrics-server
-            tag: v0.7.2
+            tag: v0.8.0
             ctx: ./metrics-server/
           - dockerfile: ./k8s-dns-node-cache/Dockerfile
             image: brinnatt/k8s-dns-node-cache
-            tag: 1.25.0
+            tag: 1.26.4
             ctx: ./k8s-dns-node-cache/
           - dockerfile: ./alpine-ansible/Dockerfile
             image: brinnatt/ansible
@@ -32,7 +32,7 @@ jobs:
             ctx: ./ansible-runner/
           - dockerfile: ./harbor-offline/Dockerfile
             image: brinnatt/harbor-offline
-            tag: v2.12.4
+            tag: v2.13.0
             ctx: ./harbor-offline/
           - dockerfile: ./kube-state-metrics/Dockerfile
             image: brinnatt/kube-state-metrics
@@ -61,22 +61,22 @@ jobs:
           - dockerfile: ./kube-apiserver/Dockerfile
             ctx: ./kube-apiserver/
             image: brinnatt/kube-apiserver
-            tag: v1.26.0
+            tag: v1.33.6
           - dockerfile: ./kube-controller-manager/Dockerfile
             ctx: ./kube-controller-manager/
             image: brinnatt/kube-controller-manager
-            tag: v1.26.0
+            tag: v1.33.6
           - dockerfile: ./kube-scheduler/Dockerfile
             ctx: ./kube-scheduler/
             image: brinnatt/kube-scheduler
-            tag: v1.26.0
+            tag: v1.33.6
           - dockerfile: ./kube-proxy/Dockerfile
             ctx: ./kube-proxy/
             image: brinnatt/kube-proxy
-            tag: v1.26.0
+            tag: v1.33.6
           - dockerfile: ./snapshot-controller/Dockerfile
             image: brinnatt/snapshot-controller
-            tag: v7.0.0
+            tag: v8.3.0
             ctx: ./snapshot-controller/
           - dockerfile: ./csi-node-driver-registrar/Dockerfile
             image: brinnatt/csi-node-driver-registrar
